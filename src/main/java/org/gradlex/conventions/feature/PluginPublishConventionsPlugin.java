@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 the GradleX team.
+ * Copyright the GradleX team.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,47 +14,53 @@
  * limitations under the License.
  */
 
-package org.gradlex.conventions.pluginpublish;
+package org.gradlex.conventions.feature;
 
+import buildparameters.BuildParametersExtension;
+import buildparameters.GeneratedBuildParametersPlugin;
 import com.gradle.publish.PublishPlugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.plugins.ExtensionContainer;
-import org.gradle.api.plugins.PluginContainer;
-import org.gradle.api.plugins.quality.CheckstyleExtension;
-import org.gradle.api.plugins.quality.CheckstylePlugin;
-import org.gradle.api.provider.ProviderFactory;
+import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.publish.PublishingExtension;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension;
 import org.gradle.plugins.signing.SigningExtension;
 import org.gradle.plugins.signing.SigningPlugin;
+import org.jspecify.annotations.NullMarked;
 
-@SuppressWarnings("unused")
+import static org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME;
+
+@NullMarked
 public abstract class PluginPublishConventionsPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
-        PluginContainer plugins = project.getPlugins();
-        ExtensionContainer extensions = project.getExtensions();
-        ProviderFactory providers = project.getProviders();
-        
-        plugins.apply(CheckstylePlugin.class);
+        var plugins = project.getPlugins();
+        var extensions = project.getExtensions();
+        var tasks = project.getTasks();
+
         plugins.apply(PublishPlugin.class);
         plugins.apply(SigningPlugin.class);
+        plugins.apply(GeneratedBuildParametersPlugin.class);
 
-        GradlePluginDevelopmentExtension gradlePlugin = extensions.getByType(GradlePluginDevelopmentExtension.class);
-        PublishingExtension publishing = extensions.getByType(PublishingExtension.class);
-        CheckstyleExtension checkstyle = extensions.getByType(CheckstyleExtension.class);
-        SigningExtension signing = extensions.getByType(SigningExtension.class);
-
-        signing.useInMemoryPgpKeys(
-                providers.environmentVariable("SIGNING_KEY").getOrNull(),
-                providers.environmentVariable("SIGNING_PASSPHRASE").getOrNull()
-        );
-
-        PluginPublishConventionsExtension pluginPublishConventions = extensions.create(
+        var java = extensions.getByType(JavaPluginExtension.class);
+        var gradlePlugin = extensions.getByType(GradlePluginDevelopmentExtension.class);
+        var publishing = extensions.getByType(PublishingExtension.class);
+        var signing = extensions.getByType(SigningExtension.class);
+        var buildParameters = extensions.getByType(BuildParametersExtension.class);
+        var pluginPublishConventions = extensions.create(
                 PluginPublishConventionsExtension.NAME, PluginPublishConventionsExtension.class,
                 project, gradlePlugin);
+
+        tasks.named("publishPlugins", task -> task.dependsOn(CHECK_TASK_NAME));
+
+        java.withJavadocJar();
+        java.withSourcesJar();
+
+        signing.useInMemoryPgpKeys(
+                buildParameters.getSigning().getKey(),
+                buildParameters.getSigning().getPassphrase()
+        );
 
         publishing.getPublications().withType(MavenPublication.class).configureEach(p -> {
             p.getPom().getName().set(pluginPublishConventions.getDisplayName());
@@ -69,7 +75,5 @@ public abstract class PluginPublishConventionsPlugin implements Plugin<Project> 
             p.getPom().scm(scm -> scm.getUrl().set(pluginPublishConventions.getGitHub()));
             p.getPom().developers(d -> pluginPublishConventions.developers.forEach(d::developer));
         });
-
-        checkstyle.getConfigDirectory().set(project.getLayout().getProjectDirectory().dir("gradle/checkstyle"));
     }
 }

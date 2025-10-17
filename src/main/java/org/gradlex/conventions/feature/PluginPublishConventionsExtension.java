@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 the GradleX team.
+ * Copyright the GradleX team.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-package org.gradlex.conventions.pluginpublish;
+package org.gradlex.conventions.feature;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.publish.maven.MavenPomDeveloper;
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension;
-import org.gradle.plugin.devel.PluginDeclaration;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-@SuppressWarnings("unused")
-public abstract class PluginPublishConventionsExtension {
+@NullMarked
+public abstract class PluginPublishConventionsExtension extends PluginDefinition {
 
     public static final String NAME = "pluginPublishConventions";
 
     private final Project project;
     private final GradlePluginDevelopmentExtension gradlePlugin;
-    private final PluginDeclaration pluginDefinition;
 
     List<Action<MavenPomDeveloper>> developers = new ArrayList<>();
 
@@ -44,11 +41,30 @@ public abstract class PluginPublishConventionsExtension {
             Project project,
             GradlePluginDevelopmentExtension gradlePlugin
     ) {
+        super(project.getName(), gradlePlugin);
         this.project = project;
         this.gradlePlugin = gradlePlugin;
-        this.pluginDefinition = gradlePlugin.getPlugins().create(toCamelCase(project.getName()));
     }
 
+    public void additionalPlugin(String id, Action<PluginDefinition> action) {
+        PluginDefinition plugin = project.getObjects().newInstance(PluginDefinition.class, id, gradlePlugin);
+        plugin.id(id);
+        plugin.pluginDefinition.getTags().set(getTags());
+        action.execute(plugin);
+    }
+
+    public void gitHub(String gitHub) {
+        gradlePlugin.getVcsUrl().set(gitHub);
+        gradlePlugin.getWebsite().convention(gitHub);
+    }
+
+    public void website(String website) {
+        gradlePlugin.getWebsite().set(website);
+    }
+
+    public void developer(Action<MavenPomDeveloper> action) {
+        developers.add(action);
+    }
 
     public Provider<String> getId() {
         return project.getProviders().provider(pluginDefinition::getId);
@@ -66,54 +82,15 @@ public abstract class PluginPublishConventionsExtension {
         return project.getProviders().provider(pluginDefinition::getDescription);
     }
 
+    public Provider<Set<String>> getTags() {
+        return pluginDefinition.getTags();
+    }
+
     public Provider<String> getGitHub() {
         return gradlePlugin.getVcsUrl();
     }
 
     public Provider<String> getWebsite() {
         return gradlePlugin.getWebsite();
-    }
-
-    public Provider<Set<String>> getTags() {
-        return pluginDefinition.getTags();
-    }
-
-    public void id(String id) {
-        pluginDefinition.setId(id);
-    }
-
-    public void implementationClass(String implementationClass) {
-        pluginDefinition.setImplementationClass(implementationClass);
-    }
-
-    public void displayName(String displayName) {
-        pluginDefinition.setDisplayName(displayName);
-    }
-
-    public void description(String description) {
-        pluginDefinition.setDescription(description);
-    }
-
-    public void gitHub(String gitHub) {
-        gradlePlugin.getVcsUrl().set(gitHub);
-        gradlePlugin.getWebsite().convention(gitHub);
-    }
-
-    public void website(String website) {
-        gradlePlugin.getWebsite().set(website);
-    }
-
-    public void tags(String... tags) {
-        pluginDefinition.getTags().set(Arrays.asList(tags));
-    }
-
-    public void developer(Action<MavenPomDeveloper> action) {
-        developers.add(action);
-    }
-
-    private static String toCamelCase(String s) {
-        String cc = Arrays.stream(s.split("-")).map(segment ->
-                segment.substring(0, 1).toUpperCase() + segment.substring(1)).collect(Collectors.joining());
-        return cc.substring(0, 1).toLowerCase() + cc.substring(1);
     }
 }
