@@ -17,6 +17,7 @@
 package org.gradlex.conventions.feature;
 
 import org.gradle.api.Action;
+import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.publish.maven.MavenPomDeveloper;
@@ -25,32 +26,39 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @NullMarked
-public abstract class PluginPublishConventionsExtension extends PluginDefinition {
+public abstract class PublishingConventionsExtension {
 
-    public static final String NAME = "pluginPublishConventions";
+    public static final String NAME = "publishingConventions";
 
     private final Project project;
     private final GradlePluginDevelopmentExtension gradlePlugin;
+    private final List<PublishingDefinition> definitions = new ArrayList<>();
 
     List<Action<MavenPomDeveloper>> developers = new ArrayList<>();
 
-    public PluginPublishConventionsExtension(
+    public PublishingConventionsExtension(
             Project project,
             GradlePluginDevelopmentExtension gradlePlugin
     ) {
-        super(project.getName(), gradlePlugin);
         this.project = project;
         this.gradlePlugin = gradlePlugin;
     }
 
-    public void additionalPlugin(String id, Action<PluginDefinition> action) {
-        PluginDefinition plugin = project.getObjects().newInstance(PluginDefinition.class, id, gradlePlugin);
-        plugin.id(id);
-        plugin.pluginDefinition.getTags().set(getTags());
-        action.execute(plugin);
+    public void pluginPortal(String id, Action<PublishingPluginPortalDefinition> action) {
+        var definition = project.getObjects().newInstance(
+                PublishingPluginPortalDefinition.class, id, gradlePlugin, project.getProviders());
+        definitions.stream().filter(d -> d instanceof PublishingPluginPortalDefinition).findFirst().ifPresent(
+                d -> definition.getTags().set(((PublishingPluginPortalDefinition) d).getTags()));
+        action.execute(definition);
+        definitions.add(definition);
+    }
+
+    public void mavenCentral(Action<PublishingMavenCentralDefinition> action) {
+        var definition = project.getObjects().newInstance(PublishingMavenCentralDefinition.class);
+        action.execute(definition);
+        definitions.add(definition);
     }
 
     public void gitHub(String gitHub) {
@@ -66,31 +74,21 @@ public abstract class PluginPublishConventionsExtension extends PluginDefinition
         developers.add(action);
     }
 
-    public Provider<String> getId() {
-        return project.getProviders().provider(pluginDefinition::getId);
-    }
-
-    public Provider<String> getImplementationClass() {
-        return project.getProviders().provider(pluginDefinition::getImplementationClass);
-    }
-
-    public Provider<String> getDisplayName() {
-        return project.getProviders().provider(pluginDefinition::getDisplayName);
-    }
-
-    public Provider<String> getDescription() {
-        return project.getProviders().provider(pluginDefinition::getDescription);
-    }
-
-    public Provider<Set<String>> getTags() {
-        return pluginDefinition.getTags();
-    }
-
     public Provider<String> getGitHub() {
         return gradlePlugin.getVcsUrl();
     }
 
     public Provider<String> getWebsite() {
         return gradlePlugin.getWebsite();
+    }
+
+    public Provider<String> getDisplayName() {
+        if (definitions.isEmpty()) { throw new GradleException("No publication defined"); }
+        return definitions.get(0).getDisplayName();
+    }
+
+    public Provider<String> getDescription() {
+        if (definitions.isEmpty()) { throw new GradleException("No publication defined"); }
+        return definitions.get(0).getDescription();
     }
 }

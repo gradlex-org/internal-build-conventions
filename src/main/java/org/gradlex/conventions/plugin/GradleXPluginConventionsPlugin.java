@@ -24,7 +24,7 @@ import org.gradlex.conventions.check.SpotlessConventionsPlugin;
 import org.gradlex.conventions.feature.AsciidoctorConventionsPlugin;
 import org.gradlex.conventions.feature.CompileConventionsPlugin;
 import org.gradlex.conventions.feature.JavadocConventionsPlugin;
-import org.gradlex.conventions.feature.PluginPublishConventionsPlugin;
+import org.gradlex.conventions.feature.PublishingConventionsPlugin;
 import org.gradlex.conventions.feature.TestingConventionsPlugin;
 import org.gradlex.conventions.report.DevelocityConventionsPlugin;
 import org.jspecify.annotations.NullMarked;
@@ -52,7 +52,7 @@ public class GradleXPluginConventionsPlugin  implements Plugin<Settings> {
             plugins.apply(JavadocConventionsPlugin.class);
             plugins.apply(TestingConventionsPlugin.class);
             plugins.apply(AsciidoctorConventionsPlugin.class);
-            plugins.apply(PluginPublishConventionsPlugin.class);
+            plugins.apply(PublishingConventionsPlugin.class);
             plugins.apply(SpotlessConventionsPlugin.class);
         });
     }
