@@ -7,7 +7,13 @@ plugins {
 version = "0.7"
 
 dependencies {
-    implementation("com.diffplug.spotless:spotless-plugin-gradle:8.0.0")
+    implementation("com.diffplug.spotless:spotless-plugin-gradle:8.0.0") {
+        // Exclude transitive dependencies of JGit as we do not need git functionality.
+        // We can't exclude JGit itself as types are referenced in SpotlessTask.class.
+        exclude("com.googlecode.javaewah", "JavaEWAH")
+        exclude("commons-codec", "commons-codec")
+        exclude("org.slf4j", "slf4j-api")
+    }
     implementation("com.gradle.publish:plugin-publish-plugin:2.0.0")
     implementation("com.gradle:common-custom-user-data-gradle-plugin:2.4.0")
     implementation("com.gradle:develocity-gradle-plugin:4.2.2")

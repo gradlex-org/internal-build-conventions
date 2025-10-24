@@ -18,6 +18,7 @@ package org.gradlex.conventions.check;
 
 import com.diffplug.gradle.spotless.SpotlessExtension;
 import com.diffplug.gradle.spotless.SpotlessPlugin;
+import com.diffplug.spotless.LineEnding;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradlex.conventions.base.LifecycleConventionsPlugin;
@@ -40,21 +41,23 @@ public abstract class SpotlessConventionsPlugin implements Plugin<Project> {
         tasks.named("qualityCheck", task -> task.dependsOn(tasks.named("spotlessCheck")));
         tasks.named("qualityGate", task -> task.dependsOn(tasks.named("spotlessApply")));
 
+        spotless.setLineEndings(LineEnding.UNIX);
+
         // format the source code
         spotless.java(java -> {
             java.targetExclude("build/**");
             java.palantirJavaFormat();
             java.licenseHeader("// SPDX-License-Identifier: Apache-2.0\n", "package|import");
         });
+        // separate 'package-info' formatting due to https://github.com/diffplug/spotless/issues/532
         spotless.format("javaPackageInfoFiles", java -> {
-            java.targetExclude("build/**");
-            // add a separate extension due to https://github.com/diffplug/spotless/issues/532
+            java.targetExclude("build");
             java.target("src/**/package-info.java");
-
             java.licenseHeader("// SPDX-License-Identifier: Apache-2.0\n", "package|import|@");
         });
 
         // format the build itself
-        spotless.kotlinGradle(gradle -> gradle.ktfmt().kotlinlangStyle().configure(conf -> conf.setMaxWidth(120)));
+        spotless.kotlinGradle(gradle ->
+                gradle.ktfmt().kotlinlangStyle().configure(conf -> conf.setMaxWidth(120)));
     }
 }
