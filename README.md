@@ -10,18 +10,19 @@
 **settings.gradle.kts**
 ```kotlin
 plugins {
-    id("org.gradlex.internal.gradlex-build-conventions") version "0.7"
+    id("org.gradlex.internal-build-conventions") version "0.7"
 }
 ```
 
 **build.gradle.kts**
 ```kotlin
-pluginPublishConventions {
-    id("${project.group}.${project.name}")
-    implementationClass("org.gradlex.buildparameters.BuildParametersPlugin")
-    displayName("Build Parameters Gradle Plugin")
-    description("Compile-safe access to parameters supplied to a Gradle build.")
-    tags("gradlex", "parameters", "build parameters")
+publishingConventions {
+    pluginPortal("${project.group}.${project.name}") {
+        implementationClass("org.gradlex.buildparameters.BuildParametersPlugin")
+        displayName("Build Parameters Gradle Plugin")
+        description("Compile-safe access to parameters supplied to a Gradle build.")
+        tags("gradlex", "parameters", "build parameters")
+    }
     gitHub("https://github.com/gradlex-org/build-parameters")
     // ...
 }
