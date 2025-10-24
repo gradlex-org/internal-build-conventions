@@ -46,10 +46,7 @@ public abstract class TestingConventionsExtension {
                             testTask.setGroup(VERIFICATION_GROUP);
                             testTask.setDescription("Runs tests against Gradle" + gradleVersionUnderTest);
                             testTask.systemProperty("gradleVersionUnderTest", gradleVersionUnderTest);
-                            testTask.useJUnitPlatform(junit -> junit.excludeTags(
-                                    "no-cross-version",
-                                    "org.gradlex.testing.NoCrossVersion"
-                            ));
+                            testTask.useJUnitPlatform(junit -> junit.excludeTags("no-cross-version"));
                             if (gradleVersionUnderTest.startsWith("6")) {
                                 testTask.getJavaLauncher().set(javaToolchains.launcherFor(tc ->
                                         tc.getLanguageVersion().set(JavaLanguageVersion.of(11))));

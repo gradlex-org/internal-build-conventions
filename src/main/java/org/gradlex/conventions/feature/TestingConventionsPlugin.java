@@ -20,11 +20,10 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.jvm.JvmTestSuite;
+import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.jvm.toolchain.JavaToolchainService;
 import org.gradle.testing.base.TestingExtension;
 import org.jspecify.annotations.NullMarked;
-
-import java.util.Map;
 
 @SuppressWarnings("UnstableApiUsage")
 @NullMarked
@@ -42,30 +41,41 @@ public abstract class TestingConventionsPlugin implements Plugin<Project> {
         var javaToolchains = extensions.getByType(JavaToolchainService.class);
 
         var samplesDir = layout.getProjectDirectory().dir("samples");
-        var docsSamplesDir = layout.getProjectDirectory().dir("src/docs/samples");
+        var snippetsDir = layout.getProjectDirectory().dir("src/docs/snippets");
 
+        // Unite tests with cross-version support
         var testSuite = testing.getSuites().named("test", JvmTestSuite.class, suite -> {
             suite.useJUnitJupiter();
+            suite.dependencies(dependencies-> dependencies.getImplementation().add("org.assertj:assertj-core:3.27.6"));
+        });
+
+        extensions.create(TestingConventionsExtension.NAME, TestingConventionsExtension.class,
+                testSuite.get(), javaToolchains);
+
+        // tested samples
+        testing.getSuites().register("testSamples", JvmTestSuite.class, suite -> {
             suite.getTargets().configureEach(target ->
                     target.getTestTask().configure(testTask -> {
                                 testTask.setMaxParallelForks(4);
                                 if (samplesDir.getAsFile().exists()) {
-                                    testTask.getInputs().dir(samplesDir);
+                                    testTask.getInputs()
+                                            .dir(samplesDir)
+                                            .withPathSensitivity(PathSensitivity.RELATIVE)
+                                            .withPropertyName("samples");
                                 }
-                                if (docsSamplesDir.getAsFile().exists()) {
-                                    testTask.getInputs().dir(docsSamplesDir);
+                                if (snippetsDir.getAsFile().exists()) {
+                                    testTask.getInputs()
+                                            .dir(snippetsDir)
+                                            .withPathSensitivity(PathSensitivity.RELATIVE)
+                                            .withPropertyName("snippets");
                                 }
                             }
                     )
             );
             suite.dependencies(dependencies-> {
-                dependencies.getImplementation().add("org.assertj:assertj-core:3.27.6");
                 dependencies.getImplementation().add("org.gradle.exemplar:samples-check:1.0.3");
                 dependencies.getImplementation().add("org.junit.vintage:junit-vintage-engine");
             });
         });
-
-        extensions.create(TestingConventionsExtension.NAME, TestingConventionsExtension.class,
-                testSuite.get(), javaToolchains);
     }
 }
