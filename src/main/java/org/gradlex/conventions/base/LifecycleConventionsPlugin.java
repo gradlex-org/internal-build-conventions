@@ -58,7 +58,12 @@ public abstract class LifecycleConventionsPlugin implements Plugin<Project> {
 
         // cleanup 'build' group
         var unimportantLifecycleTasks = List.of(
-                BUILD_DEPENDENTS_TASK_NAME, BUILD_NEEDED_TASK_NAME, CLASSES_TASK_NAME, TEST_CLASSES_TASK_NAME);
+                BUILD_DEPENDENTS_TASK_NAME,
+                BUILD_NEEDED_TASK_NAME,
+                CLASSES_TASK_NAME,
+                TEST_CLASSES_TASK_NAME,
+                "testSamplesClasses"
+        );
         project.afterEvaluate(__ ->
                 tasks.configureEach(task -> {
                     if (unimportantLifecycleTasks.contains(task.getName())) {

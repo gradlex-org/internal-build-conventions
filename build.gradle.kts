@@ -82,7 +82,7 @@ buildParameters {
 }
 
 pluginPublishConventions {
-    id("${project.group}.internal.gradlex-build-conventions")
+    id("${project.group}.${project.name}")
     implementationClass("org.gradlex.conventions.plugin.GradleXPluginConventionsPlugin")
     displayName("Conventions for building Gradle plugins")
     description("Conventions for building Gradle plugins used by all projects in the GradleX organisation.")
@@ -97,5 +97,10 @@ pluginPublishConventions {
         id = "jjohannes"
         name = "Jendrik Johannes"
         email = "jendrik@gradlex.org"
+    }
+    developer {
+        id = "ljacomet"
+        name = "Louis Jacomet"
+        email = "louis@gradlex.org"
     }
 }
