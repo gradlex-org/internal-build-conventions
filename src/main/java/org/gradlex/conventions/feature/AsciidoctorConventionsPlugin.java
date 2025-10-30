@@ -64,7 +64,7 @@ public abstract class AsciidoctorConventionsPlugin implements Plugin<Project> {
             attributes.put("sectanchors", true);
             attributes.put("idprefix", "");
             attributes.put("idseparator", "-");
-            attributes.put("samples-path", layout.getProjectDirectory().dir("src/docs/samples").getAsFile().toString());
+            attributes.put("samples-path", layout.getProjectDirectory().dir("src/docs/snippets").getAsFile().toString());
             task.setAttributes(attributes);
         });
     }
