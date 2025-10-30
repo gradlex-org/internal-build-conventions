@@ -25,6 +25,8 @@ import org.gradle.jvm.toolchain.JavaToolchainService;
 import org.gradle.testing.base.TestingExtension;
 import org.jspecify.annotations.NullMarked;
 
+import static org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME;
+
 @SuppressWarnings("UnstableApiUsage")
 @NullMarked
 public abstract class TestingConventionsPlugin implements Plugin<Project> {
@@ -33,6 +35,7 @@ public abstract class TestingConventionsPlugin implements Plugin<Project> {
     public void apply(Project project) {
         var plugins = project.getPlugins();
         var extensions = project.getExtensions();
+        var tasks = project.getTasks();
         var layout = project.getLayout();
 
         plugins.apply(JavaPlugin.class);
@@ -54,6 +57,7 @@ public abstract class TestingConventionsPlugin implements Plugin<Project> {
 
         // tested samples
         testing.getSuites().register("testSamples", JvmTestSuite.class, suite -> {
+            tasks.named(CHECK_TASK_NAME, task -> task.dependsOn(suite));
             suite.getTargets().configureEach(target ->
                     target.getTestTask().configure(testTask -> {
                                 testTask.setMaxParallelForks(4);
