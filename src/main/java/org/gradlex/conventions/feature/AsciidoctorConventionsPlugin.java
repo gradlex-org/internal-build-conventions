@@ -41,11 +41,13 @@ public abstract class AsciidoctorConventionsPlugin implements Plugin<Project> {
         plugins.apply(AsciidoctorJPlugin.class);
 
         tasks.named("asciidoctor", AsciidoctorTask.class, task -> {
+            var snippetsDir = layout.getProjectDirectory().dir("src/docs/snippets");
+
             task.notCompatibleWithConfigurationCache(
                     "https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/564");
-            task.getInputs().dir("src/docs/samples")
-                    .withPathSensitivity(PathSensitivity.RELATIVE)
-                    .withPropertyName("samples");
+            task.getInputs().dir(snippetsDir)
+                    .withPropertyName("snippets")
+                    .withPathSensitivity(PathSensitivity.RELATIVE);
 
             task.setFailureLevel(Severity.WARN);
 
@@ -64,7 +66,7 @@ public abstract class AsciidoctorConventionsPlugin implements Plugin<Project> {
             attributes.put("sectanchors", true);
             attributes.put("idprefix", "");
             attributes.put("idseparator", "-");
-            attributes.put("samples-path", layout.getProjectDirectory().dir("src/docs/snippets").getAsFile().toString());
+            attributes.put("samples-path", snippetsDir.getAsFile().toString());
             task.setAttributes(attributes);
         });
     }
