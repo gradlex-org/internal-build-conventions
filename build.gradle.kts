@@ -43,7 +43,7 @@ buildParameters {
         defaultValue = false
     }
     group("signing") {
-        // allow to disable signing for locat testing
+        // disable signing for local testing
         bool("disable") {
             defaultValue = false
         }
