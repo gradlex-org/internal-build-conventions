@@ -4,7 +4,7 @@ plugins {
     id("org.gradlex.internal.plugin-publish-conventions") version "0.6"
 }
 
-version = "0.7"
+version = "0.8"
 
 dependencies {
     implementation("com.diffplug.spotless:spotless-plugin-gradle:8.0.0") {
