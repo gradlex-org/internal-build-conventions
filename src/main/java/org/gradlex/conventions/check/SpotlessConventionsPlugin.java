@@ -45,7 +45,7 @@ public abstract class SpotlessConventionsPlugin implements Plugin<Project> {
 
         // format the source code
         spotless.java(java -> {
-            java.targetExclude("build/**");
+            java.targetExclude("build");
             java.palantirJavaFormat();
             java.licenseHeader("// SPDX-License-Identifier: Apache-2.0\n", "package|import");
         });
