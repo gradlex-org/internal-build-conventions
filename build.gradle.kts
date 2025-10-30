@@ -110,3 +110,6 @@ pluginPublishConventions {
         email = "louis@gradlex.org"
     }
 }
+
+// Do not publish a marker for 'build-parameters'
+gradlePlugin.plugins.removeAll { it.name == "build-parameters" }
