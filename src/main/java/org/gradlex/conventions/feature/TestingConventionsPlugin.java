@@ -79,6 +79,9 @@ public abstract class TestingConventionsPlugin implements Plugin<Project> {
             suite.dependencies(dependencies-> {
                 dependencies.getImplementation().add("org.gradle.exemplar:samples-check:1.0.3");
                 dependencies.getImplementation().add("org.junit.vintage:junit-vintage-engine");
+                // address https://github.com/gradlex-org/java-module-packaging/security/dependabot/1
+                dependencies.getImplementation().addConstraint(
+                        dependencies.constraint("org.apache.commons:commons-lang3:3.19.0"));
             });
         });
     }
