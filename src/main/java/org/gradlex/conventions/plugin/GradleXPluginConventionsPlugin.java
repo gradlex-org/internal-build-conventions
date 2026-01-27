@@ -20,6 +20,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.initialization.Settings;
 import org.gradlex.conventions.base.DependencyRulesPlugin;
 import org.gradlex.conventions.base.LifecycleConventionsPlugin;
+import org.gradlex.conventions.check.SourceFoldersCheckConventionsPlugin;
 import org.gradlex.conventions.check.SpotlessConventionsPlugin;
 import org.gradlex.conventions.feature.AsciidoctorConventionsPlugin;
 import org.gradlex.conventions.feature.CompileConventionsPlugin;
@@ -53,6 +54,7 @@ public class GradleXPluginConventionsPlugin  implements Plugin<Settings> {
             plugins.apply(TestingConventionsPlugin.class);
             plugins.apply(AsciidoctorConventionsPlugin.class);
             plugins.apply(PublishingConventionsPlugin.class);
+            plugins.apply(SourceFoldersCheckConventionsPlugin.class);
             plugins.apply(SpotlessConventionsPlugin.class);
         });
     }
