@@ -17,7 +17,7 @@ dependencies {
     implementation("com.gradle.publish:plugin-publish-plugin:2.0.0")
     implementation("com.gradle:common-custom-user-data-gradle-plugin:2.4.0")
     implementation("com.gradle:develocity-gradle-plugin:4.3.1")
-    implementation("com.gradleup.nmcp:nmcp:1.3.0")
+    implementation("com.gradleup.nmcp:nmcp:1.4.4")
     implementation("org.asciidoctor:asciidoctor-gradle-jvm:4.0.5")
     implementation("org.gradlex:jvm-dependency-conflict-resolution:2.5")
     implementation("org.gradlex:reproducible-builds:1.1")

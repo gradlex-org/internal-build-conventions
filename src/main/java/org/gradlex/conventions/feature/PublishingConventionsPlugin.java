@@ -20,8 +20,8 @@ import buildparameters.BuildParametersExtension;
 import buildparameters.GeneratedBuildParametersPlugin;
 import com.gradle.publish.PublishPlugin;
 import nmcp.NmcpAggregationExtension;
-import nmcp.NmcpAggregationPlugin;
-import nmcp.NmcpPlugin;
+import nmcp.internal.DefaultNmcpAggregationExtensionPlugin;
+import nmcp.internal.DefaultNmcpExtensionPlugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPluginExtension;
@@ -44,8 +44,8 @@ public abstract class PublishingConventionsPlugin implements Plugin<Project> {
         var dependencies = project.getDependencies();
 
         plugins.apply(PublishPlugin.class);
-        plugins.apply(NmcpPlugin.class);
-        plugins.apply(NmcpAggregationPlugin.class);
+        plugins.apply(DefaultNmcpExtensionPlugin.class);
+        plugins.apply(DefaultNmcpAggregationExtensionPlugin.class);
         plugins.apply(SigningPlugin.class);
         plugins.apply(GeneratedBuildParametersPlugin.class);
 
