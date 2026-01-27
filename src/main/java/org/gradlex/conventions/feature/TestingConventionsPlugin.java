@@ -49,7 +49,7 @@ public abstract class TestingConventionsPlugin implements Plugin<Project> {
         // Unite tests with cross-version support
         var testSuite = testing.getSuites().named("test", JvmTestSuite.class, suite -> {
             suite.useJUnitJupiter();
-            suite.dependencies(dependencies-> dependencies.getImplementation().add("org.assertj:assertj-core:3.27.6"));
+            suite.dependencies(dependencies-> dependencies.getImplementation().add(TestingVersionCatalog.assertJ));
         });
 
         extensions.create(TestingConventionsExtension.NAME, TestingConventionsExtension.class,
@@ -77,11 +77,11 @@ public abstract class TestingConventionsPlugin implements Plugin<Project> {
                     )
             );
             suite.dependencies(dependencies-> {
-                dependencies.getImplementation().add("org.gradle.exemplar:samples-check:1.0.3");
+                dependencies.getImplementation().add(TestingVersionCatalog.exemplarSamplesCheck);
                 dependencies.getImplementation().add("org.junit.vintage:junit-vintage-engine");
                 // address https://github.com/gradlex-org/java-module-packaging/security/dependabot/1
                 dependencies.getImplementation().addConstraint(
-                        dependencies.constraint("org.apache.commons:commons-lang3:3.19.0"));
+                        dependencies.constraint(TestingVersionCatalog.commonsLang3));
             });
         });
     }
