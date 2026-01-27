@@ -40,9 +40,16 @@ public abstract class DependencyRulesPlugin implements Plugin<Project> {
             module.removeDependency("com.google.guava:failureaccess");
             module.removeDependency("com.google.j2objc:j2objc-annotations");
             module.removeDependency("org.checkerframework:checker-qual");
+            module.removeDependency("org.jspecify:jspecify");
         });
         patch.module("org.gradle.exemplar:samples-discovery", module -> {
             module.removeDependency("org.asciidoctor:asciidoctorj");
+        });
+        patch.module("com.palantir.javaformat:palantir-java-format", module -> {
+            module.removeDependency("com.google.code.findbugs:jsr305");
+        });
+        patch.module("com.facebook:ktfmt", module -> {
+            module.removeDependency("org.ec4j.core:ec4j-core");
         });
     }
 }
