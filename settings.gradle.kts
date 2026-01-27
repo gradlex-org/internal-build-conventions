@@ -1,22 +1,3 @@
-plugins {
-    id("com.gradle.develocity") version "4.3.1"
-    id("com.gradle.common-custom-user-data-gradle-plugin") version "2.4.0"
-}
+plugins { id("org.gradlex.internal-build-conventions") version "0.9" }
 
 rootProject.name = "internal-build-conventions"
-
-dependencyResolutionManagement {
-    repositories.gradlePluginPortal()
-}
-
-develocity {
-    buildScan {
-        termsOfUseUrl = "https://gradle.com/help/legal-terms-of-use"
-        termsOfUseAgree = "yes"
-
-        // required to bind this to a local variable for configuration cache compatibility
-        val isCi = providers.environmentVariable("CI").getOrElse("false").toBoolean()
-        publishing.onlyIf { isCi }
-    }
-}
-

@@ -1,10 +1,8 @@
-plugins {
-    id("java-gradle-plugin")
-    id("org.gradlex.build-parameters") version "1.4.4"
-    id("org.gradlex.internal.plugin-publish-conventions") version "0.6"
-}
+plugins { id("org.gradlex.build-parameters") version "1.4.5" }
 
 version = "0.9"
+
+tasks.compileJava { options.release.set(17) }
 
 dependencies {
     implementation("com.diffplug.spotless:spotless-plugin-gradle:8.2.0") {
@@ -29,13 +27,7 @@ dependencies.constraints {
     }
 }
 
-// ==== the following can be remove once we update the onventions to '0.7'
-group = "org.gradlex"
-java { toolchain.languageVersion = JavaLanguageVersion.of(17) }
-tasks.checkstyleMain { exclude("buildparameters/**") }
-// ====
-
-buildParameters {
+buildParametersDefinition {
     pluginId("org.gradlex.internal.gradlex-build-parameters")
     bool("ci") {
         description = "Whether or not the build is running in a CI environment"
@@ -44,9 +36,7 @@ buildParameters {
     }
     group("signing") {
         // disable signing for local testing
-        bool("disable") {
-            defaultValue = false
-        }
+        bool("disable") { defaultValue = false }
         // key and passphrase need default values because SigningExtension.useInMemoryPgpKeys does not accept providers
         description = "Details about artifact signing"
         string("key") {
@@ -87,12 +77,13 @@ buildParameters {
     }
 }
 
-pluginPublishConventions {
-    id("${project.group}.${project.name}")
-    implementationClass("org.gradlex.conventions.plugin.GradleXPluginConventionsPlugin")
-    displayName("Conventions for building Gradle plugins")
-    description("Conventions for building Gradle plugins used by all projects in the GradleX organisation.")
-    tags("gradlex", "conventions", "publish", "plugins")
+publishingConventions {
+    pluginPortal("${project.group}.${project.name}") {
+        implementationClass("org.gradlex.conventions.plugin.GradleXPluginConventionsPlugin")
+        displayName("Conventions for building Gradle plugins")
+        description("Conventions for building Gradle plugins used by all projects in the GradleX organisation.")
+        tags("gradlex", "conventions", "publish", "plugins")
+    }
     gitHub("https://github.com/gradlex-org/plugin-publish-conventions")
     developer {
         id = "britter"
