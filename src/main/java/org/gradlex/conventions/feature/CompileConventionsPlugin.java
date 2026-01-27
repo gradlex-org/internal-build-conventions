@@ -22,11 +22,13 @@ import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.compile.JavaCompile;
+import org.gradle.jvm.tasks.Jar;
 import org.gradle.jvm.toolchain.JavaLanguageVersion;
 import org.gradlex.reproduciblebuilds.ReproducibleBuildsPlugin;
 import org.jspecify.annotations.NullMarked;
 
 import static org.gradle.api.plugins.JavaPlugin.COMPILE_JAVA_TASK_NAME;
+import static org.gradle.api.plugins.JavaPlugin.JAR_TASK_NAME;
 import static org.gradle.language.base.plugins.LifecycleBasePlugin.ASSEMBLE_TASK_NAME;
 
 @NullMarked
@@ -60,6 +62,12 @@ public abstract class CompileConventionsPlugin implements Plugin<Project> {
             task.getOptions().getCompilerArgs().add("-implicit:none");
             task.getOptions().getCompilerArgs().add("-Werror");
             task.getOptions().getCompilerArgs().add("-Xlint:all,-serial");
+        });
+
+        tasks.named(JAR_TASK_NAME, Jar.class, task -> {
+            task.into("META-INF", meta -> meta.from(project.getLayout().getSettingsDirectory().file("LICENSE.txt")));
+            task.getManifest().getAttributes().put("Implementation-Title", project.getName());
+            task.getManifest().getAttributes().put("Implementation-Version", project.getVersion());
         });
     }
 }
