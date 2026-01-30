@@ -4,9 +4,6 @@ version = "0.10"
 
 tasks.compileJava { options.release.set(17) }
 
-// TODO remove with next internal-build-conventions update
-spotless.java { targetExclude("build/**") }
-
 dependencies {
     implementation("com.diffplug.spotless:spotless-plugin-gradle:8.2.1") {
         // Exclude transitive dependencies of JGit as we do not need git functionality.
