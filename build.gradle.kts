@@ -5,7 +5,7 @@ version = "0.10"
 tasks.compileJava { options.release.set(17) }
 
 dependencies {
-    implementation("com.diffplug.spotless:spotless-plugin-gradle:8.2.1") {
+    implementation("com.diffplug.spotless:spotless-plugin-gradle:8.3.0") {
         // Exclude transitive dependencies of JGit as we do not need git functionality.
         // We can't exclude JGit itself as types are referenced in SpotlessTask.class.
         exclude("com.googlecode.javaewah", "JavaEWAH")
