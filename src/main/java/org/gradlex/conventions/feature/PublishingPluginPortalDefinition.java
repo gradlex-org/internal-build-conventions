@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.provider.SetProperty;
+import org.gradle.plugin.compatibility.SupportedFeaturesExtensionsKt;
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension;
 import org.gradle.plugin.devel.PluginDeclaration;
 import org.jspecify.annotations.NullMarked;
@@ -24,6 +25,14 @@ public abstract class PublishingPluginPortalDefinition implements PublishingDefi
                 gradlePlugin.getPlugins().create(toCamelCase(id).replace("org.gradlex.", ""));
         this.pluginDeclaration.setId(id);
         this.providers = providers;
+        declareCompatibilityWithConfigurationCache();
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    private void declareCompatibilityWithConfigurationCache() {
+        SupportedFeaturesExtensionsKt.compatibility(pluginDeclaration, p -> {
+            p.getFeatures().getConfigurationCache().set(true);
+        });
     }
 
     public void implementationClass(String implementationClass) {
