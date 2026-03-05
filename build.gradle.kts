@@ -2,7 +2,7 @@ plugins { id("org.gradlex.build-parameters") version "1.4.5" }
 
 version = "0.10"
 
-tasks.compileJava { options.release.set(17) }
+tasks.compileJava { options.release = 17 }
 
 dependencies {
     implementation("com.diffplug.spotless:spotless-plugin-gradle:8.3.0") {
