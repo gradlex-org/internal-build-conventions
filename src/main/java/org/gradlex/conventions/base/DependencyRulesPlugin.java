@@ -36,5 +36,9 @@ public abstract class DependencyRulesPlugin implements Plugin<Project> {
         patch.module("com.facebook:ktfmt", module -> {
             module.removeDependency("org.ec4j.core:ec4j-core");
         });
+        patch.module("org.asciidoctor:asciidoctorj", module -> {
+            module.removeDependency("org.jruby:jruby");
+            module.addRuntimeOnlyDependency("org.jruby:jruby-complete:9.4.8.0");
+        });
     }
 }

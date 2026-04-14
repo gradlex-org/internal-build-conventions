@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.gradlex.conventions.feature;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.asciidoctor.gradle.base.log.Severity;
-import org.asciidoctor.gradle.jvm.AsciidoctorJPlugin;
-import org.asciidoctor.gradle.jvm.AsciidoctorTask;
+import org.asciidoctor.gradle.model5.core.AsciidoctorModelExtension;
+import org.asciidoctor.gradle.model5.core.tasks.AsciidoctorTask;
+import org.asciidoctor.gradle.model5.jvm.plugins.AsciidoctorjPlugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPlugin;
@@ -22,37 +20,37 @@ public abstract class AsciidoctorConventionsPlugin implements Plugin<Project> {
         var tasks = project.getTasks();
 
         plugins.apply(JavaPlugin.class);
-        plugins.apply(AsciidoctorJPlugin.class);
+        plugins.apply(AsciidoctorjPlugin.class);
 
-        tasks.named("asciidoctor", AsciidoctorTask.class, task -> {
-            var snippetsDir = layout.getProjectDirectory().dir("src/docs/snippets");
+        var snippetsDir = layout.getProjectDirectory().dir("src/docs/snippets");
+        var asciidoc = project.getExtensions().getByType(AsciidoctorModelExtension.class);
 
-            task.notCompatibleWithConfigurationCache(
-                    "https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/564");
+        asciidoc.getPublications().named("main", main -> {
+            main.output("asciidoctorj", "html");
+            main.getSourceSet().setSourceDir("src/docs/asciidoc");
+
+            var attributes = main.getSourceSet().getAttributes();
+            attributes.add("docinfo", "shared");
+            attributes.add("imagesdir", "./images");
+            attributes.add("source-highlighter", "prettify");
+            attributes.add("tabsize", "4");
+            attributes.add("toc", "left");
+            attributes.add("tip-caption", "💡");
+            attributes.add("note-caption", "ℹ️");
+            attributes.add("important-caption", "❗");
+            attributes.add("caution-caption", "🔥");
+            attributes.add("warning-caption", "⚠️");
+            attributes.add("sectanchors", true);
+            attributes.add("idprefix", "");
+            attributes.add("idseparator", "-");
+            attributes.add("samples-path", snippetsDir.getAsFile().toString());
+        });
+
+        tasks.withType(AsciidoctorTask.class, task -> {
             task.getInputs()
                     .dir(snippetsDir)
                     .withPropertyName("snippets")
                     .withPathSensitivity(PathSensitivity.RELATIVE);
-
-            task.setFailureLevel(Severity.WARN);
-
-            Map<String, Object> attributes = new HashMap<>();
-            attributes.put("docinfodir", "src/docs/asciidoc");
-            attributes.put("docinfo", "shared");
-            attributes.put("imagesdir", "./images");
-            attributes.put("source-highlighter", "prettify");
-            attributes.put("tabsize", "4");
-            attributes.put("toc", "left");
-            attributes.put("tip-caption", "💡");
-            attributes.put("note-caption", "ℹ️");
-            attributes.put("important-caption", "❗");
-            attributes.put("caution-caption", "🔥");
-            attributes.put("warning-caption", "⚠️");
-            attributes.put("sectanchors", true);
-            attributes.put("idprefix", "");
-            attributes.put("idseparator", "-");
-            attributes.put("samples-path", snippetsDir.getAsFile().toString());
-            task.setAttributes(attributes);
         });
     }
 }

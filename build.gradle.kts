@@ -16,7 +16,13 @@ dependencies {
     implementation("com.gradle:common-custom-user-data-gradle-plugin:2.6.0")
     implementation("com.gradle:develocity-gradle-plugin:4.4.0")
     implementation("com.gradleup.nmcp:nmcp:1.4.4")
-    implementation("org.asciidoctor:asciidoctor-gradle-jvm:4.0.5")
+    implementation("org.asciidoctor:asciidoctor5-jvm-core-plugin:5.0.0-alpha.1") {
+        exclude(group = "io.ratpack")
+        exclude(group = "io.netty")
+        exclude(group = "org.codehaus.groovy")
+        exclude(group = "io.github.http-builder-ng")
+        exclude(group = "io.github.rburgst")
+    }
     implementation("org.gradlex:jvm-dependency-conflict-resolution:2.5")
     implementation("org.gradlex:reproducible-builds:1.1")
 }
@@ -24,6 +30,9 @@ dependencies {
 dependencies.constraints {
     implementation("org.jetbrains:annotations:13.0!!") {
         because("This version is enforced by Gradle through the Kotlin plugin")
+    }
+    implementation("org.ysb33r.gradle.jruby:jrubygradle-resolver:2.3.2") {
+        because("Used by org.asciidoctor plugin; updates to a version with signed artifacts")
     }
 }
 
