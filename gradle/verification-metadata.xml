@@ -13,7 +13,7 @@
          <!-- trust unsigned artifacts: https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/769 -->
          <trust file="asciidoctor5-core-plugin-5.0.0-alpha.1.jar"/>
          <trust file="asciidoctor5-jvm-core-plugin-5.0.0-alpha.1.jar"/>
-         <trust file="jrubygradle-resolver-2.2.1.jar"/>
+         <trust file="jrubygradle-resolver-2.1.2.jar"/>
       </trusted-artifacts>
       <trusted-keys>
          <!-- BUILD: CONVENTIONS -->
