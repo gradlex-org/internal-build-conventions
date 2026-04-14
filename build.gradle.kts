@@ -31,9 +31,6 @@ dependencies.constraints {
     implementation("org.jetbrains:annotations:13.0!!") {
         because("This version is enforced by Gradle through the Kotlin plugin")
     }
-    implementation("org.ysb33r.gradle.jruby:jrubygradle-resolver:2.3.2") {
-        because("Used by org.asciidoctor plugin; updates to a version with signed artifacts")
-    }
 }
 
 buildParametersDefinition {
