@@ -1,6 +1,6 @@
 plugins { id("org.gradlex.build-parameters") version "1.4.5" }
 
-version = "0.11"
+version = "0.12"
 
 tasks.compileJava { options.release = 17 }
 
