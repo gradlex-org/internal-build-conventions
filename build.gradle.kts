@@ -15,7 +15,7 @@ dependencies {
     implementation("com.gradle.publish:plugin-publish-plugin:2.1.1")
     implementation("com.gradle:common-custom-user-data-gradle-plugin:2.6.0")
     implementation("com.gradle:develocity-gradle-plugin:4.4.0")
-    implementation("com.gradleup.nmcp:nmcp:1.4.4")
+    implementation("com.gradleup.nmcp:nmcp:1.5.0")
     implementation("org.asciidoctor:asciidoctor5-jvm-core-plugin:5.0.0-alpha.1") {
         exclude(group = "io.ratpack")
         exclude(group = "io.netty")
