@@ -21,6 +21,8 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public abstract class PublishingConventionsPlugin implements Plugin<Project> {
+
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public void apply(Project project) {
         var plugins = project.getPlugins();
@@ -57,7 +59,7 @@ public abstract class PublishingConventionsPlugin implements Plugin<Project> {
         }
 
         // Maven Central
-        dependencies.add("nmcpAggregation", project.project(project.getPath())); // for NmcpAggregationPlugin
+        dependencies.add("nmcpAggregation", dependencies.project()); // for NmcpAggregationPlugin
         nmcpAggregation.centralPortal(central -> {
             central.getUsername().set(buildParameters.getMavenCentral().getUsername());
             central.getPassword().set(buildParameters.getMavenCentral().getPassword());
