@@ -42,8 +42,8 @@ public abstract class LifecycleConventionsPlugin implements Plugin<Project> {
 
         // cleanup 'build' group
         var unimportantLifecycleTasks = List.of(
-                BUILD_DEPENDENTS_TASK_NAME,
-                BUILD_NEEDED_TASK_NAME,
+                "buildDependents",
+                "buildNeeded",
                 CLASSES_TASK_NAME,
                 TEST_CLASSES_TASK_NAME,
                 "testSamplesClasses");
