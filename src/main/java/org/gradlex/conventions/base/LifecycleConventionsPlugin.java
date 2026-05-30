@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.gradlex.conventions.base;
 
-import static org.gradle.api.plugins.JavaBasePlugin.BUILD_DEPENDENTS_TASK_NAME;
-import static org.gradle.api.plugins.JavaBasePlugin.BUILD_NEEDED_TASK_NAME;
 import static org.gradle.api.plugins.JavaPlugin.CLASSES_TASK_NAME;
 import static org.gradle.api.plugins.JavaPlugin.TEST_CLASSES_TASK_NAME;
 import static org.gradle.api.plugins.JavaPlugin.TEST_TASK_NAME;
@@ -42,11 +40,7 @@ public abstract class LifecycleConventionsPlugin implements Plugin<Project> {
 
         // cleanup 'build' group
         var unimportantLifecycleTasks = List.of(
-                BUILD_DEPENDENTS_TASK_NAME,
-                BUILD_NEEDED_TASK_NAME,
-                CLASSES_TASK_NAME,
-                TEST_CLASSES_TASK_NAME,
-                "testSamplesClasses");
+                "buildDependents", "buildNeeded", CLASSES_TASK_NAME, TEST_CLASSES_TASK_NAME, "testSamplesClasses");
         project.afterEvaluate(__ -> tasks.configureEach(task -> {
             if (unimportantLifecycleTasks.contains(task.getName())) {
                 task.setGroup(null);
