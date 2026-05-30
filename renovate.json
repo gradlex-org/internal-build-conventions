@@ -7,6 +7,10 @@
     {
       "matchDatasources": ["maven"],
       "registryUrls": ["https://plugins.gradle.org/m2"]
+    },
+    {
+      "matchManagers": "gradle-wrapper",
+      "ignoreUnstable": false
     }
   ]
 }
