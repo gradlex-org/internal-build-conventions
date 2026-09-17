@@ -6,6 +6,7 @@ import buildparameters.GeneratedBuildParametersPlugin;
 import com.gradle.CommonCustomUserDataGradlePlugin;
 import com.gradle.develocity.agent.gradle.DevelocityConfiguration;
 import com.gradle.develocity.agent.gradle.DevelocityPlugin;
+import com.gradle.develocity.agent.gradle.scan.BuildScanPublishingConfiguration.PublishingContext;
 import org.gradle.api.Plugin;
 import org.gradle.api.initialization.Settings;
 import org.jspecify.annotations.NullMarked;
@@ -28,16 +29,15 @@ public abstract class DevelocityConventionsPlugin implements Plugin<Settings> {
         var develocity = extensions.getByType(DevelocityConfiguration.class);
         var buildParameters = extensions.getByType(BuildParametersExtension.class);
 
-        // required to bind this to a local variable for configuration cache compatibility
         var isCi = buildParameters.getCi();
-        var hasAccessKey = System.getenv("DEVELOCITY_ACCESS_KEY") != null;
+        var hasAccessKey = buildParameters.getDevelocity().getAccessKey().isPresent();
 
         develocity.getServer().set(SERVER);
         develocity.getProjectId().set(PROJECT_ID);
 
         develocity.buildScan(buildScan -> {
             buildScan.getUploadInBackground().set(!isCi);
-            buildScan.getPublishing().onlyIf(context -> context.isAuthenticated());
+            buildScan.getPublishing().onlyIf(PublishingContext::isAuthenticated);
             buildScan.getObfuscation().ipAddresses(addresses -> addresses.stream()
                     .map(__ -> "0.0.0.0")
                     .toList());
@@ -47,8 +47,7 @@ public abstract class DevelocityConventionsPlugin implements Plugin<Settings> {
             buildCache.local(local -> local.setEnabled(true));
             buildCache.remote(develocity.getBuildCache(), remote -> {
                 remote.setEnabled(true);
-                // Check access key presence to avoid build cache errors on PR builds
-                // from forks, where the access key is not available.
+                // Do not push on forks where access key is not present
                 remote.setPush(isCi && hasAccessKey);
             });
         });
