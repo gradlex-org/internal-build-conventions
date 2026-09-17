@@ -13,6 +13,7 @@ dependencies {
         exclude("org.slf4j", "slf4j-api")
     }
     implementation("com.gradle.publish:plugin-publish-plugin:2.1.1")
+    implementation("org.gradle.plugin:compatibility-plugin:1.1.0")
     implementation("com.gradle:common-custom-user-data-gradle-plugin:2.7.0")
     implementation("com.gradle:develocity-gradle-plugin:4.5.0")
     implementation("com.gradleup.nmcp:nmcp:1.6.2")

@@ -28,10 +28,10 @@ public abstract class PublishingPluginPortalDefinition implements PublishingDefi
         declareCompatibilityWithConfigurationCache();
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     private void declareCompatibilityWithConfigurationCache() {
         SupportedFeaturesExtensionsKt.compatibility(pluginDeclaration, p -> {
             p.getFeatures().getConfigurationCache().set(true);
+            p.getFeatures().getIsolatedProjects().set(true);
         });
     }
 
