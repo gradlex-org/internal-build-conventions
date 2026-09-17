@@ -44,9 +44,7 @@ public abstract class DevelocityConventionsPlugin implements Plugin<Settings> {
         });
 
         settings.buildCache(buildCache -> {
-            buildCache.local(local -> local.setEnabled(true));
             buildCache.remote(develocity.getBuildCache(), remote -> {
-                remote.setEnabled(true);
                 // Do not push on forks where access key is not present
                 remote.setPush(isCi && hasAccessKey);
             });
