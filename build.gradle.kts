@@ -82,6 +82,13 @@ buildParametersDefinition {
             fromEnvironment()
         }
     }
+
+    group("develocity") {
+        string("accessKey") {
+            description = "The Develocity access key"
+            fromEnvironment("DEVELOCITY_ACCESS_KEY")
+        }
+    }
 }
 
 publishingConventions {
