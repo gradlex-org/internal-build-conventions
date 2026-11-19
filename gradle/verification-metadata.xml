@@ -90,6 +90,7 @@
          <!-- CODE FORMATTING - Spotless Gradle Plugin with transitive dependencies -->
          <!-- ✅ Signed by DiffPlug LLC -->
          <trusted-key id="A31DDE881C3E3C4C985BD0D02C7F998F4272C851" group="com.diffplug.spotless"/>
+         <trusted-key id="2820DE9F95EC4043E616B735FA5C18CFB74EC7C6" group="com.diffplug.spotless"/>
          <!-- ✅ Signed by DiffPlug LLC -->
          <trusted-key id="4797B4F5DCC46CEA61059071A1AE06236CA2BA62" group="com.diffplug.durian"/>
          <!-- ✅ Signed by JetBrains -->
